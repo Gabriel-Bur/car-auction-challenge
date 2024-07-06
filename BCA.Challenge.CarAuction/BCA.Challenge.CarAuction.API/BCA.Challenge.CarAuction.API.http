@@ -1,0 +1,6 @@
+@BCA.Challenge.CarAuction.API_HostAddress = http://localhost:5015
+
+GET {{BCA.Challenge.CarAuction.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
