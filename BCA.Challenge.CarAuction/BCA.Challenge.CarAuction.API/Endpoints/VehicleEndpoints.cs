@@ -34,7 +34,7 @@ public class VehicleEndpoints : IEndpoint
         [FromQuery] int? year)
     {
         var result = service.SearchVehicles(type, manufacture, year);
-        return result.Any() ? Results.Ok(result) : Results.NotFound();
+        return result is not null ? Results.Ok(result) : Results.NotFound();
     }
 
     internal IResult CreateVehicle(
@@ -52,6 +52,6 @@ public class VehicleEndpoints : IEndpoint
         
         service.AddVehicle(vehicle);
 
-        return Results.Ok();
+        return Results.NoContent();
     }
 }

@@ -12,19 +12,38 @@ public class AuctionEndpoints : IEndpoint
             .WithDescription("Everything about auction")
             .WithOpenApi();
 
-        group.MapPost("/{vehicleId}/start", () => Console.Write("Teste"))
+        group.MapPost("/{vehicleId}/start", StartAuction)
             .WithSummary("Start auction for specified vehicle");
 
-        group.MapPost("/{vehicleId}/bid", () => Console.Write("Teste"))
+        group.MapPost("/{vehicleId}/bid", PlaceBid)
             .WithSummary("Place a bid for specified vehicle");
 
-        group.MapPost("/{vehicleId}/close", () => Console.Write("Teste"))
+        group.MapPost("/{vehicleId}/close", CloseAuction)
             .WithSummary("Close auction for specified vehicle");
 
     }
 
     public void AddServices(IServiceCollection services)
     {
-        services.AddScoped<IAuctionService, AuctionService>();
+        services.AddSingleton<IAuctionService, AuctionService>();
     }
+
+    internal IResult StartAuction(IAuctionService service, Guid vehicleId)
+    {
+        service.StartAuction(vehicleId);
+        return Results.Ok();
+    }
+
+    internal IResult PlaceBid(IAuctionService service, Guid vehicleId, decimal bidAmount, string bidder)
+    {
+        service.PlaceBid(vehicleId, bidAmount, bidder);
+        return Results.Ok();
+    }
+
+    internal IResult CloseAuction(IAuctionService service, Guid vehicleId)
+    {
+        service.CloseAuction(vehicleId);
+        return Results.Ok();
+    }
+
 }
