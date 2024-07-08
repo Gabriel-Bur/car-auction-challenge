@@ -13,11 +13,6 @@ public class AuctionRepository : IAuctionRepository
         return Task.FromResult(_auctions.TryAdd(auction.VehicleId, auction));
     }
 
-    public Task<bool> AuctionExistsAsync(Guid vehicleId)
-    {
-        return Task.FromResult(_auctions.ContainsKey(vehicleId));
-    }
-
     public Task<Auction?> GetAuctionAsync(Guid vehicleId)
     {
         _auctions.TryGetValue(vehicleId, out Auction? auction);

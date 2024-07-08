@@ -6,6 +6,5 @@ public interface IAuctionRepository
 {
     Task<bool> AddAuctionAsync(Auction auction);
     Task<Auction?> GetAuctionAsync(Guid vehicleId);
-    Task<bool> AuctionExistsAsync(Guid vehicleId);
     Task<bool> UpdateAuctionAsync(Auction auction);
 }
