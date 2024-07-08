@@ -1,7 +1,11 @@
 ﻿using BCA.Challenge.CarAuction.API.Factory;
 using BCA.Challenge.CarAuction.API.Interfaces;
+using BCA.Challenge.CarAuction.API.Interfaces.Repositories;
+using BCA.Challenge.CarAuction.API.Interfaces.Services;
 using BCA.Challenge.CarAuction.API.Models;
+using BCA.Challenge.CarAuction.API.Repositories;
 using BCA.Challenge.CarAuction.API.Request;
+using BCA.Challenge.CarAuction.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BCA.Challenge.CarAuction.API.Endpoints;
@@ -24,21 +28,22 @@ public class VehicleEndpoints : IEndpoint
 
     public void AddServices(IServiceCollection services)
     {
+        services.AddSingleton<IVehicleRepository, VehicleRepository>();
+        services.AddSingleton<IVehicleService, VehicleService>();
     }
 
-
-    internal IResult GetAllVehicles(
-        IAuctionService service, 
+    internal async Task<IResult> GetAllVehicles(
+        IVehicleService service, 
         [FromQuery] VehicleType? type, 
         [FromQuery] string? manufacture, 
         [FromQuery] int? year)
     {
-        var result = service.SearchVehicles(type, manufacture, year);
+        var result = await service.SearchVehiclesAsync(type, manufacture, year).ConfigureAwait(false);
         return result is not null ? Results.Ok(result) : Results.NotFound();
     }
 
-    internal IResult CreateVehicle(
-        IAuctionService service, 
+    internal async Task<IResult> CreateVehicle(
+        IVehicleService service, 
         [FromQuery] VehicleType type, 
         [FromBody] AddVehicleRequest addVehicle)
     {
@@ -50,7 +55,7 @@ public class VehicleEndpoints : IEndpoint
             addVehicle.NumberOfSeats,
             addVehicle.LoadCapacity);
         
-        service.AddVehicle(vehicle);
+        await service.AddVehicleAsync(vehicle).ConfigureAwait(false);
 
         return Results.NoContent();
     }

@@ -1,4 +1,7 @@
 ﻿using BCA.Challenge.CarAuction.API.Interfaces;
+using BCA.Challenge.CarAuction.API.Interfaces.Repositories;
+using BCA.Challenge.CarAuction.API.Interfaces.Services;
+using BCA.Challenge.CarAuction.API.Repositories;
 using BCA.Challenge.CarAuction.API.Services;
 
 namespace BCA.Challenge.CarAuction.API.Endpoints;
@@ -25,24 +28,25 @@ public class AuctionEndpoints : IEndpoint
 
     public void AddServices(IServiceCollection services)
     {
+        services.AddSingleton<IAuctionRepository, AuctionRepository>();
         services.AddSingleton<IAuctionService, AuctionService>();
     }
 
-    internal IResult StartAuction(IAuctionService service, Guid vehicleId)
+    internal async Task<IResult> StartAuction(IAuctionService service, Guid vehicleId)
     {
-        service.StartAuction(vehicleId);
+        await service.StartAuctionAsync(vehicleId).ConfigureAwait(false);
         return Results.Ok();
     }
 
-    internal IResult PlaceBid(IAuctionService service, Guid vehicleId, decimal bidAmount, string bidder)
+    internal async Task<IResult> PlaceBid(IAuctionService service, Guid vehicleId, decimal bidAmount, string bidder)
     {
-        service.PlaceBid(vehicleId, bidAmount, bidder);
+        await service.PlaceBidAsync(vehicleId, bidAmount, bidder).ConfigureAwait(false);
         return Results.Ok();
     }
 
-    internal IResult CloseAuction(IAuctionService service, Guid vehicleId)
+    internal async Task<IResult> CloseAuction(IAuctionService service, Guid vehicleId)
     {
-        service.CloseAuction(vehicleId);
+        await service.CloseAuctionAsync(vehicleId).ConfigureAwait(false);
         return Results.Ok();
     }
 
