@@ -1,76 +1,72 @@
-﻿using BCA.Challenge.CarAuction.API.Interfaces;
+﻿using BCA.Challenge.CarAuction.API.Interfaces.Repositories;
+using BCA.Challenge.CarAuction.API.Interfaces.Services;
 using BCA.Challenge.CarAuction.API.Models;
-using System.Collections.Concurrent;
 
 namespace BCA.Challenge.CarAuction.API.Services;
 
 public class AuctionService : IAuctionService
 {
-    private readonly ConcurrentDictionary<Guid, Vehicle> _vehicles = new();
-    private readonly ConcurrentDictionary<Guid, Auction> _auctions = new();
+    private readonly IVehicleRepository _vehicleRepository;
+    private readonly IAuctionRepository _auctionRepository;
 
-    public void AddVehicle(Vehicle vehicle)
+    public AuctionService(
+        IVehicleRepository vehicleRepository, 
+        IAuctionRepository auctionRepository)
     {
-        if (!_vehicles.TryAdd(vehicle.Id, vehicle))
-            throw new ArgumentException("Vehicle with the same ID already exists.");
+        _vehicleRepository = vehicleRepository;
+        _auctionRepository = auctionRepository;
     }
 
-    public void CloseAuction(Guid vehicleId)
+    public async Task CloseAuctionAsync(Guid vehicleId)
     {
-        if (!_auctions.ContainsKey(vehicleId) || !_auctions[vehicleId].IsActive)
-        {
+        var auction = await _auctionRepository.GetAuctionAsync(vehicleId);
+        if (auction is null || !auction.IsActive)
             throw new InvalidOperationException("Auction is not active.");
-        }
 
-        _auctions[vehicleId].IsActive = false;
+        auction.IsActive = true;
+        await _auctionRepository.UpdateAuctionAsync(auction);
     }
 
-    public void PlaceBid(Guid vehicleId, decimal bidAmount, string bidder)
+    public async Task PlaceBidAsync(Guid vehicleId, decimal bidAmount, string bidder)
     {
-        if (!_auctions.ContainsKey(vehicleId) || !_auctions[vehicleId].IsActive)
+        var auction = await _auctionRepository.GetAuctionAsync(vehicleId);
+
+        if (auction == null || !auction.IsActive)
             throw new InvalidOperationException("Auction is not active.");
 
-        if (bidAmount <= _auctions[vehicleId].CurrentBid)
+        if (bidAmount <= auction.CurrentBid)
             throw new ArgumentException("Bid amount must be greater than the current highest bid.");
 
-        _auctions[vehicleId].CurrentBid = bidAmount;
-        _auctions[vehicleId].CurrentBidder = bidder;
+        auction.CurrentBid = bidAmount;
+        auction.CurrentBidder = bidder;
+
+        await _auctionRepository.UpdateAuctionAsync(auction);
     }
 
-    public IEnumerable<Vehicle> SearchVehicles(VehicleType? type, string? manufacturer, int? year)
+    public async Task StartAuctionAsync(Guid vehicleId)
     {
-        var query = _vehicles.Values.AsQueryable();
+        var GetVehicleTask = _vehicleRepository.GetVehicleAsync(vehicleId);
+        var GetAuctionTask = _auctionRepository.GetAuctionAsync(vehicleId);
 
-        if (type is not null)
-            query = query.Where(x => x.Model == type);
+        await Task.WhenAll(GetVehicleTask, GetAuctionTask);
 
-        if (!string.IsNullOrEmpty(manufacturer))
-            query = query.Where(x => x.Manufacturer.Contains(manufacturer));
+        Vehicle? vehicle = GetVehicleTask.Result;
+        Auction? auction = GetAuctionTask.Result;
 
-        if (year is not null)
-            query = query.Where(x => x.Year.Equals(year));
-
-        return query;
-    }
-
-    public void StartAuction(Guid vehicleId)
-    {
-        if (!_vehicles.ContainsKey(vehicleId))
+        if (vehicle is null)
             throw new KeyNotFoundException("Vehicle does not exist.");
 
-        if (_auctions.ContainsKey(vehicleId) && _auctions[vehicleId].IsActive)
+        if (auction is not null && auction.IsActive)
             throw new InvalidOperationException("Auction already active for this vehicle.");
 
         Auction newAuction = new() 
         {
-            VehicleId = vehicleId,
+            VehicleId = vehicle.Id,
             IsActive = true,
-            CurrentBid = _vehicles[vehicleId].StartingBid,
+            CurrentBid = vehicle.StartingBid,
             CurrentBidder = null 
         };
 
-        if(!_auctions.TryAdd(vehicleId, newAuction))
-            throw new Exception("Something went wrong when starting the auction.");
-
+        await _auctionRepository.AddAuctionAsync(newAuction);
     }
 }
