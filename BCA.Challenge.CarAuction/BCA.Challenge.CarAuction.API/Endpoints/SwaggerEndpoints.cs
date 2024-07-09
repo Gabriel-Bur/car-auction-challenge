@@ -25,7 +25,7 @@ namespace BCA.Challenge.CarAuction.API.Endpoints
                 app.UseSwagger();
                 app.UseSwaggerUI(s =>
                 {
-                    s.SwaggerEndpoint("/swagger/v1/swagger.json", "CarAuctionAPI");
+                    s.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                 });
             }
         }
