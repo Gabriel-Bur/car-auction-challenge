@@ -5,9 +5,11 @@ VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{E33BEA19-7D1A-4CE6-B4EE-FCF5EBC12DC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BCA.Challenge.CarAuction.API", "BCA.Challenge.CarAuction.API\BCA.Challenge.CarAuction.API.csproj", "{0EB0BB43-FC5E-4975-856D-64E948677704}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BCA.Challenge.CarAuction.API", "BCA.Challenge.CarAuction.API\BCA.Challenge.CarAuction.API.csproj", "{0EB0BB43-FC5E-4975-856D-64E948677704}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{7E09FA38-BE60-4757-91F3-59F08815D211}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BCA.Challenge.CarAuction.API.Test", "BCA.Challenge.CarAuction.API.Test\BCA.Challenge.CarAuction.API.Test.csproj", "{6CD9DF16-821F-4C0E-99E5-C136105AD4D8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,12 +21,17 @@ Global
 		{0EB0BB43-FC5E-4975-856D-64E948677704}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0EB0BB43-FC5E-4975-856D-64E948677704}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0EB0BB43-FC5E-4975-856D-64E948677704}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CD9DF16-821F-4C0E-99E5-C136105AD4D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CD9DF16-821F-4C0E-99E5-C136105AD4D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CD9DF16-821F-4C0E-99E5-C136105AD4D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CD9DF16-821F-4C0E-99E5-C136105AD4D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0EB0BB43-FC5E-4975-856D-64E948677704} = {E33BEA19-7D1A-4CE6-B4EE-FCF5EBC12DC5}
+		{6CD9DF16-821F-4C0E-99E5-C136105AD4D8} = {7E09FA38-BE60-4757-91F3-59F08815D211}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1A42DECC-D776-4B87-901E-5A9DC59DE14C}
