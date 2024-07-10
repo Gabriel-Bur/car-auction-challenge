@@ -13,7 +13,7 @@ public static class EndpointDefinitionExtensions
             .GetAssemblies()
             .SelectMany(s => s.GetTypes())
             .Where(x => typeof(IEndpoint).IsAssignableFrom(x) && x.IsClass && !x.IsAbstract)
-            .Select(x => Activator.CreateInstance(x))
+            .Select(Activator.CreateInstance)
             .Cast<IEndpoint>()
         );
 
